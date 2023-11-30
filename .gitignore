@@ -81,3 +81,5 @@ serviceAccount.*.json
 
 # Shopify
 shopify.**.toml
+!/packages/functions/.npmrc
+!/.npmrc
