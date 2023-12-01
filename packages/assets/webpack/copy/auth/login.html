@@ -8,13 +8,14 @@
   <meta name="theme-color" content="#4285f4">
   <meta name="description" content="An AVADA Shopify application for Shopify">
   <title>Login | AVADA CRM</title>
-  <link rel='icon' href='/assets/favicon.png' type='image/x-icon'/>
+  <link rel="icon" href="/assets/favicon.png" type="image/x-icon" />
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Poppins|Bebas+Neue&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css"
         href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/loadingio/loading.css@v2.0.0/dist/loading.min.css">
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/loadingio/ldbutton@v1.0.1/dist/ldbtn.min.css"/>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/loadingio/ldbutton@v1.0.1/dist/ldbtn.min.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
           integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -40,12 +41,11 @@
   </div>
 </div>
 <script type="module">
-  import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
   import {
     getAuth,
     GoogleAuthProvider,
-    signInWithPopup,
-    onAuthStateChanged
+    signInWithPopup
   } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -62,17 +62,55 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
-  const btnGoogleLogin = document.getElementById('btn-google-login');
+  const btnGoogleLogin = document.getElementById("btn-google-login");
   const signIn = async () => {
     const result = await signInWithPopup(auth, provider);
-    console.log(result);
-    /*
-     * call to api to check role of user
-     *
-     * */
-  }
+    const data = JSON.stringify({
+      "email": result.user.email,
+      "avatar": result.user.photoURL
+    });
 
-  btnGoogleLogin.addEventListener('click', signIn);
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function() {
+      if (this.readyState === 4) {
+        if (this.status === 200) {
+          localStorage.setItem("token", btoa(JSON.stringify(result.user?.stsTokenManager)));
+          localStorage.setItem("user", this.response?.data);
+          Toastify({
+            text: "Login successfully",
+            duration: 3000,
+            gravity: "bottom",
+            position: "right",
+            backgroundColor: "#00a0ac",
+            stopOnFocus: true
+          }).showToast();
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 3000);
+        } else {
+          Toastify({
+            text: "Forbidden",
+            duration: 3000,
+            gravity: "bottom",
+            backgroundColor: "#ff0000",
+            stopOnFocus: true
+          }).showToast();
+          setTimeout(() => {
+            window.location.href = "/forbidden";
+          }, 2000);
+        }
+      }
+    });
+
+    xhr.open("POST", "http://127.0.0.1:5000/api/user/check");
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.send(data);
+  };
+
+  btnGoogleLogin.addEventListener("click", signIn);
 </script>
 </body>
 </html>

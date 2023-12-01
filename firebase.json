@@ -52,6 +52,10 @@
         "destination": "/auth/login.html"
       },
       {
+        "source": "/forbidden",
+        "destination": "/403.html"
+      },
+      {
         "source": "/api/**",
         "function": "api"
       },
