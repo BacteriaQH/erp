@@ -5,13 +5,14 @@ import Samples from '@assets/loadables/Samples/Samples';
 import Settings from '@assets/loadables/Settings/Settings';
 import {routePrefix} from '@assets/config/app';
 import NotFound from '@assets/loadables/NotFound';
-
+import User from '@assets/loadables/User/User';
 // eslint-disable-next-line react/prop-types
 const Routes = ({prefix = routePrefix}) => (
   <Switch>
     <Route exact path={prefix + '/'} component={Home} />
     <Route exact path={prefix + '/samples'} component={Samples} />
     <Route exact path={prefix + '/settings'} component={Settings} />
+    <Route exact path={prefix + '/user'} component={User} />
     <Route path="*" component={NotFound} />
   </Switch>
 );

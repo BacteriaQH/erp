@@ -49,7 +49,13 @@ export async function api(
   }
 
   const {timeout} = clientConfig;
-  const client = axios.create({timeout});
+  const client = axios.create({
+    baseURL: 'http://127.0.0.1:5000/api',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    timeout
+  });
   return client
     .request({
       ...options,
