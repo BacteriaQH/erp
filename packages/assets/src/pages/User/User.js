@@ -1,16 +1,51 @@
-import {Layout, Page} from '@shopify/polaris';
-import React from 'react';
+import {Card, Layout, Page} from '@shopify/polaris';
+import React, {useRef} from 'react';
+
+import useConfirmModal from '@assets/hooks/popup/useConfirmModal';
+import ListUser from './ListUser';
+import UserDataModal from './UserDataModal';
+import useCreateApi from '@assets/hooks/api/useCreateApi';
 import useFetchApi from '@assets/hooks/api/useFetchApi';
 
 export default function User() {
-  const {data, loading, setData} = useFetchApi('/api/users');
+  const inputRef = useRef({
+    email: '',
+    role: 'user',
+    fullName: '',
+    active: false
+  });
+  const {data, loading, setData} = useFetchApi({
+    url: '/users',
+    initLoad: true
+  });
+  const {handleCreate, creating} = useCreateApi({
+    url: '/user',
+    fullResp: true
+  });
+  const modalContent = () => <UserDataModal inputRef={inputRef} />;
+  const {modal, openModal, closeModal} = useConfirmModal({
+    confirmAction: async () => {
+      const resp = await handleCreate(inputRef.current);
+      setData(prev => [...prev, resp.data]);
+      closeModal();
+    },
+    title: 'Create User',
+    buttonTitle: 'Create',
+    HtmlContent: modalContent,
+    defaultCurrentInput: inputRef.current,
+    loading: creating
+  });
+
   return (
-    <Page title="User">
+    <Page title="User" primaryAction={{content: 'Create', onClick: openModal}}>
       <Layout>
         <Layout.Section>
-          <Page title="User"></Page>
+          <Card>
+            <ListUser data={data} loading={loading} />
+          </Card>
         </Layout.Section>
       </Layout>
+      {modal}
     </Page>
   );
 }

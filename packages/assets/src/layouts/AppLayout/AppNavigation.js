@@ -71,10 +71,10 @@ export default function AppNavigation() {
             }
           },
           {
-            url: '/employee',
+            url: '/user',
             icon: CustomersMajor,
             label: 'User',
-            selected: location.pathname === getUrl('/employee'),
+            selected: location.pathname === getUrl('/user'),
             onClick: () => {
               history.push('/employee');
             }
