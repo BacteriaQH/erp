@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {Button, DisplayText, Icon, Link, Stack, Thumbnail, TopBar} from '@shopify/polaris';
 import PropTypes from 'prop-types';
 import {
   BugMajor,
+  CustomersMajor,
+  LogOutMinor,
   MobileCancelMajor,
-  MobileHamburgerMajor,
-  PaymentsMajor
+  MobileHamburgerMajor
 } from '@shopify/polaris-icons';
 import isLocal from '@assets/helpers/isLocal';
 import {docLink} from '@assets/config/menuLink';
@@ -13,10 +14,11 @@ import InfoIcon from '@assets/resources/icons/info.svg';
 import NotificationIcon from '@assets/resources/icons/notification.svg';
 import {LOGO_URL, LOGO_WIDTH} from '@assets/config/theme';
 import '@assets/styles/layout/topbar.scss';
-import {isShopUpgradable} from '@assets/services/shopService';
-import {useStore} from '@assets/reducers/storeReducer';
 import useConfirmSheet from '@assets/hooks/popup/useConfirmSheet';
 import AppNewsSheet from '@assets/components/AppNews/AppNewsSheet';
+import {useUser} from '@assets/reducers/userReducer';
+import {useAuth} from '@assets/reducers/authReducer';
+import {logout} from '@assets/actions/authAction';
 
 /**
  * @param {boolean} isNavOpen
@@ -25,11 +27,14 @@ import AppNewsSheet from '@assets/components/AppNews/AppNewsSheet';
  * @constructor
  */
 export default function AppTopBar({isNavOpen, toggleOpenNav}) {
-  const {state} = useStore();
-  const {shop} = state;
-
+  const {state: user} = useUser();
   const {sheet: newsSheet, openSheet: openNewsSheet} = useConfirmSheet({Content: AppNewsSheet});
-
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const toggleIsUserMenuOpen = useCallback(
+    () => setIsUserMenuOpen(isUserMenuOpen => !isUserMenuOpen),
+    []
+  );
+  // const {dispatch} = useAuth();
   return (
     <TopBar
       secondaryMenu={
@@ -41,7 +46,7 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
             <img alt="Avada App Name" src={LOGO_URL} width={LOGO_WIDTH} />
             <DisplayText size="small">
               <Link url="/" removeUnderline>
-                App Name
+                ERP
               </Link>
             </DisplayText>
             {isLocal && (
@@ -60,16 +65,25 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
               </Button>
             </Stack>
           </div>
-          {isShopUpgradable(shop) && (
-            <Button url="/subscription">
-              <Stack alignment="center">
-                <Icon source={PaymentsMajor} />
-                <Stack.Item>Subscription</Stack.Item>
-              </Stack>
-            </Button>
-          )}
           {newsSheet}
         </div>
+      }
+      userMenu={
+        <TopBar.UserMenu
+          name={user?.user?.fullname}
+          avatar={user?.user?.avatar}
+          initials={user?.user?.fullname[0]}
+          open={isUserMenuOpen}
+          onToggle={toggleIsUserMenuOpen}
+          actions={[
+            {
+              items: [{content: 'My account', icon: CustomersMajor}]
+            },
+            {
+              items: [{content: 'Log out', icon: LogOutMinor, onAction: () => logout()}]
+            }
+          ]}
+        />
       }
     />
   );
