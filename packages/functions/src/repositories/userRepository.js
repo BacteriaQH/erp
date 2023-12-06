@@ -67,3 +67,17 @@ export const getUsers = async (limit, sort) => {
     console.log(e);
   }
 };
+
+export const createUser = async fieldUpdate => {
+  try {
+    const res = await userRef.add(fieldUpdate);
+    console.log('Added document with ID: ', res.id);
+    const newUser = await getUserById(res.id);
+    return {
+      id: res.id,
+      ...newUser
+    };
+  } catch (e) {
+    console.log(e);
+  }
+};

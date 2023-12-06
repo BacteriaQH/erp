@@ -11,6 +11,7 @@ export default function apiRouter() {
   router.get('/users', userController.getUsersController);
   router.delete('/user/:id', userController.deleteUserController);
   router.put('/user/:id', userController.updateUserController);
+  router.post('/user', userController.createUserController);
 
   router.post('/upload', upload.single('file'), userController.uploadUserController);
   return router;

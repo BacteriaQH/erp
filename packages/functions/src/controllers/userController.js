@@ -1,4 +1,9 @@
-import {checkUser, getUsers, updateUserById} from '@functions/repositories/userRepository';
+import {
+  checkUser,
+  createUser,
+  getUsers,
+  updateUserById
+} from '@functions/repositories/userRepository';
 
 export const checkUserController = async ctx => {
   try {
@@ -33,6 +38,23 @@ export const checkUserController = async ctx => {
   }
 };
 
+export const createUserController = async ctx => {
+  try {
+    const createField = ctx.request.body;
+    const user = await createUser({...createField, createdAt: new Date()});
+    return (ctx.body = {
+      data: user,
+      success: true,
+      message: 'User created'
+    });
+  } catch (e) {
+    ctx.status = 404;
+    ctx.body = {
+      success: false,
+      error: e.message
+    };
+  }
+};
 export const deleteUserController = async ctx => {
   try {
     const {id} = ctx.params;
