@@ -33,24 +33,24 @@ if (module.hot) module.hot.accept();
  * @param {object} clientConfig
  * @return {Promise<object>}
  */
-export async function api(
+export async function api({
   url,
   method = 'GET',
   data = {},
   params = {},
   options = {},
   clientConfig = {timeout: 30000}
-) {
+}) {
   const idToken = await auth.currentUser.getIdToken(false);
   const apiUrl = isOutboundLink(url) ? url : `/api${url}`;
-  if (!isOutboundLink(url)) {
-    params.env = getStorageData(CRM_ENV_KEY, '');
-    params.appType = getStorageData(CRM_APP_KEY, '');
-  }
+  // if (!isOutboundLink(url)) {
+  //   params.env = getStorageData(CRM_ENV_KEY, '');
+  //   params.appType = getStorageData(CRM_APP_KEY, '');
+  // }
 
   const {timeout} = clientConfig;
   const client = axios.create({
-    baseURL: 'http://127.0.0.1:5000/api',
+    baseURL: 'http://127.0.0.1:5000',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -66,7 +66,7 @@ export async function api(
         'x-auth-token': idToken
       },
       method,
-      params,
+      // params,
       url: apiUrl
     })
     .then(res => res.data);
