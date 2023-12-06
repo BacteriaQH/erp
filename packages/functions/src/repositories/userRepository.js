@@ -47,3 +47,23 @@ export const updateUserById = async (id, updateFields) => {
     console.log(e);
   }
 };
+
+/**
+ * @param {number} limit
+ * @param {"desc"|| "asc"} sort
+ * @returns {Object}
+ */
+export const getUsers = async (limit, sort) => {
+  try {
+    const usersSnapshot = await userRef
+      .limit(limit | 20)
+      .orderBy('createdAt', sort)
+      .get();
+    return usersSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (e) {
+    console.log(e);
+  }
+};

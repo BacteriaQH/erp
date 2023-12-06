@@ -4,7 +4,7 @@ import router from '../routes/api';
 import render from 'koa-ejs';
 import path from 'path';
 import {handleError} from '../services/errorService';
-import bodyParser from '@koa/bodyparser';
+import {bodyParser} from '@koa/bodyparser';
 // Initialize all demand configuration for an application
 const api = new App();
 api.proxy = true;

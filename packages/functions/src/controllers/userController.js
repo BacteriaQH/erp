@@ -1,4 +1,4 @@
-import {checkUser, updateUserById} from '@functions/repositories/userRepository';
+import {checkUser, getUsers, updateUserById} from '@functions/repositories/userRepository';
 
 export const checkUserController = async ctx => {
   try {
@@ -24,6 +24,72 @@ export const checkUserController = async ctx => {
       },
       success: false
     };
+  } catch (e) {
+    ctx.status = 404;
+    ctx.body = {
+      success: false,
+      error: e.message
+    };
+  }
+};
+
+export const deleteUserController = async ctx => {
+  try {
+    const {id} = ctx.params;
+    await updateUserById(id, {active: false});
+    return (ctx.body = {
+      success: true,
+      message: 'User deleted'
+    });
+  } catch (e) {
+    ctx.status = 404;
+    ctx.body = {
+      success: false,
+      error: e.message
+    };
+  }
+};
+
+export const updateUserController = async ctx => {
+  try {
+    const {id} = ctx.params;
+    const {updateFields} = ctx.request.body;
+
+    const updatedUser = await updateUserById(id, updateFields);
+    return (ctx.body = {
+      data: updatedUser,
+      success: true
+    });
+  } catch (e) {
+    ctx.status = 404;
+    ctx.body = {
+      success: false,
+      error: e.message
+    };
+  }
+};
+
+export const getUsersController = async ctx => {
+  try {
+    const {limit, sort} = ctx.request.query;
+    const users = await getUsers(Number(limit), sort);
+    return (ctx.body = {
+      data: users,
+      success: true,
+      message: 'Users fetched'
+    });
+  } catch (e) {
+    ctx.status = 404;
+    ctx.body = {
+      success: false,
+      error: e.message
+    };
+  }
+};
+
+export const uploadUserController = async ctx => {
+  try {
+    console.log(ctx.request.file);
   } catch (e) {
     ctx.status = 404;
     ctx.body = {

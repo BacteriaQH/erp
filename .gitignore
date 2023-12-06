@@ -83,3 +83,4 @@ serviceAccount.*.json
 shopify.**.toml
 !/packages/functions/.npmrc
 !/.npmrc
+!/packages/functions/public/
