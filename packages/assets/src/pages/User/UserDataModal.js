@@ -1,7 +1,7 @@
 import {Modal, Select, SettingToggle, TextField} from '@shopify/polaris';
 import React, {useState} from 'react';
 
-export default function UserDataModal({inputRef}) {
+export default function UserDataModal({inputRef, isEditing = false}) {
   const [userData, setUserData] = useState(inputRef.current);
 
   const handleChange = (value, name) => {
@@ -24,6 +24,15 @@ export default function UserDataModal({inputRef}) {
         value={userData.fullName}
         onChange={value => handleChange(value, 'fullName')}
       />
+      {isEditing && (
+        <TextField
+          label="English name"
+          autoComplete="off"
+          name="englishName"
+          value={userData.englishName}
+          onChange={value => handleChange(value, 'englishName')}
+        />
+      )}
       <Select
         label="Role"
         options={[

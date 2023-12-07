@@ -3,6 +3,6 @@ import Loading from '@assets/components/Loading';
 
 // eslint-disable-next-line new-cap
 export default Loadable({
-  loader: () => import('../../pages/User/User'),
+  loader: () => import('../../pages/User'),
   loading: Loading
 });

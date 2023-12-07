@@ -8,12 +8,13 @@ import useCreateApi from '@assets/hooks/api/useCreateApi';
 import useFetchApi from '@assets/hooks/api/useFetchApi';
 
 export default function User() {
-  const inputRef = useRef({
+  const initialInput = {
     email: '',
     role: 'user',
     fullName: '',
     active: false
-  });
+  };
+  const inputRef = useRef(initialInput);
   const {data, loading, setData} = useFetchApi({
     url: '/users',
     initLoad: true
@@ -27,6 +28,7 @@ export default function User() {
     confirmAction: async () => {
       const resp = await handleCreate(inputRef.current);
       setData(prev => [...prev, resp.data]);
+      inputRef.current = initialInput;
       closeModal();
     },
     title: 'Create User',
@@ -41,7 +43,7 @@ export default function User() {
       <Layout>
         <Layout.Section>
           <Card>
-            <ListUser data={data} loading={loading} />
+            <ListUser data={data} setData={setData} loading={loading} />
           </Card>
         </Layout.Section>
       </Layout>
