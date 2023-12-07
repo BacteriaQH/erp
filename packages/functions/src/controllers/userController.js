@@ -8,7 +8,7 @@ import {
 
 export const checkUserController = async ctx => {
   try {
-    const {email, avatar} = ctx.request.body;
+    const {email, avatar} = ctx.req.body;
     const user = await checkUser(email);
     if (user && user.role.length > 0 && user.active) {
       if (user.avatar === '') {
@@ -41,7 +41,7 @@ export const checkUserController = async ctx => {
 
 export const createUserController = async ctx => {
   try {
-    const createField = ctx.request.body;
+    const createField = ctx.req.body;
     const user = await createUser({...createField, createdAt: new Date()});
     return (ctx.body = {
       data: user,
@@ -58,7 +58,7 @@ export const createUserController = async ctx => {
 };
 export const deleteUserController = async ctx => {
   try {
-    const {ids} = ctx.request.body;
+    const {ids} = ctx.req.body;
     await deleteUser(ids);
     return (ctx.body = {
       success: true,
@@ -75,7 +75,7 @@ export const deleteUserController = async ctx => {
 
 export const updateUserController = async ctx => {
   try {
-    const {id, updateFields} = ctx.request.body;
+    const {id, updateFields} = ctx.req.body;
 
     const updatedUser = await updateUserById(id, updateFields);
     return (ctx.body = {
@@ -93,7 +93,7 @@ export const updateUserController = async ctx => {
 
 export const getUsersController = async ctx => {
   try {
-    const {limit, sort} = ctx.request.query;
+    const {limit, sort} = ctx.req.query;
     const users = await getUsers(Number(limit), sort);
     return (ctx.body = {
       data: users,
@@ -111,9 +111,15 @@ export const getUsersController = async ctx => {
 
 export const uploadUserController = async ctx => {
   try {
-    console.log(ctx.request.file);
+    console.log(ctx.request);
+    console.log(ctx.req.body);
+    ctx.body = {
+      success: true,
+      message: 'Upload success'
+    };
   } catch (e) {
     ctx.status = 404;
+    console.log(e);
     ctx.body = {
       success: false,
       error: e.message

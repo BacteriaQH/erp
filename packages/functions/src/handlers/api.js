@@ -16,15 +16,11 @@ render(api, {
   viewExt: 'html'
 });
 
-function hybridBodyParser(opts) {
-  const bp = bodyParser(opts);
-  return async (ctx, next) => {
-    ctx.request.body = ctx.request.body || ctx.req.body;
-    return bp(ctx, next);
-  };
-}
-
-api.use(hybridBodyParser());
+api.use(
+  bodyParser({
+    enableRawChecking: true
+  })
+);
 api.use(createErrorHandler());
 
 // Register all routes for the application
