@@ -76,7 +76,7 @@ export default function AppNavigation() {
             label: 'User',
             selected: location.pathname === getUrl('/user'),
             onClick: () => {
-              history.push('/employee');
+              history.push('/user');
             }
           }
         ].reduce(prepareMenu, [])}
