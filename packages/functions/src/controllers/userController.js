@@ -1,6 +1,7 @@
 import {
   checkUser,
   createUser,
+  deleteUser,
   getUsers,
   updateUserById
 } from '@functions/repositories/userRepository';
@@ -57,8 +58,8 @@ export const createUserController = async ctx => {
 };
 export const deleteUserController = async ctx => {
   try {
-    const {id} = ctx.params;
-    await updateUserById(id, {active: false});
+    const {ids} = ctx.request.body;
+    await deleteUser(ids);
     return (ctx.body = {
       success: true,
       message: 'User deleted'
@@ -74,8 +75,7 @@ export const deleteUserController = async ctx => {
 
 export const updateUserController = async ctx => {
   try {
-    const {id} = ctx.params;
-    const {updateFields} = ctx.request.body;
+    const {id, updateFields} = ctx.request.body;
 
     const updatedUser = await updateUserById(id, updateFields);
     return (ctx.body = {

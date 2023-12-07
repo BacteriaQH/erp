@@ -9,8 +9,8 @@ export default function apiRouter() {
   router.get('/sample', sampleController.exampleAction);
   router.post('/user/check', userController.checkUserController);
   router.get('/users', userController.getUsersController);
-  router.delete('/user/:id', userController.deleteUserController);
-  router.put('/user/:id', userController.updateUserController);
+  router.delete('/user', userController.deleteUserController);
+  router.put('/user', userController.updateUserController);
   router.post('/user', userController.createUserController);
 
   router.post('/upload', upload.single('file'), userController.uploadUserController);

@@ -28,7 +28,7 @@ const getUserById = async id => {
     const userSnapshot = await userRef.doc(id).get();
     const user = userSnapshot.data();
     if (!user) return 'User not found';
-    return user;
+    return {id, ...user};
   } catch (e) {
     console.log(e);
   }
@@ -68,15 +68,29 @@ export const getUsers = async (limit, sort) => {
   }
 };
 
-export const createUser = async fieldUpdate => {
+export const createUser = async createField => {
   try {
-    const res = await userRef.add(fieldUpdate);
+    const res = await userRef.add(createField);
     console.log('Added document with ID: ', res.id);
     const newUser = await getUserById(res.id);
     return {
       id: res.id,
       ...newUser
     };
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const deleteUser = async ids => {
+  try {
+    console.log(ids);
+    const batch = firebaseAdmin.firestore().batch();
+    ids.map(id => {
+      const docRef = userRef.doc(id);
+      batch.delete(docRef);
+    });
+    await batch.commit();
   } catch (e) {
     console.log(e);
   }
