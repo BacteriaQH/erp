@@ -5,8 +5,9 @@ import Samples from '@assets/loadables/Samples/Samples';
 import Settings from '@assets/loadables/Settings/Settings';
 import {routePrefix} from '@assets/config/app';
 import NotFound from '@assets/loadables/NotFound';
-import User from '@assets/loadables/User/User';
+import User from '@assets/loadables/User';
 import {getStorageData} from '@assets/helpers/storage';
+import Profile from '@assets/loadables/Profile';
 // eslint-disable-next-line react/prop-types
 const user = getStorageData('user');
 const router = {
@@ -29,7 +30,7 @@ const router = {
     },
     {
       path: '/me',
-      component: User
+      component: Profile
     }
   ],
   user: [
@@ -39,7 +40,7 @@ const router = {
     },
     {
       path: '/me',
-      component: User
+      component: Profile
     }
   ]
 };

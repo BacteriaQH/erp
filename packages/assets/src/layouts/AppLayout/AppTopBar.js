@@ -18,6 +18,7 @@ import useConfirmSheet from '@assets/hooks/popup/useConfirmSheet';
 import AppNewsSheet from '@assets/components/AppNews/AppNewsSheet';
 import {useUser} from '@assets/reducers/userReducer';
 import {logout} from '@assets/actions/authAction';
+import {useHistory} from 'react-router-dom';
 
 /**
  * @param {boolean} isNavOpen
@@ -27,6 +28,7 @@ import {logout} from '@assets/actions/authAction';
  */
 export default function AppTopBar({isNavOpen, toggleOpenNav}) {
   const {state: user} = useUser();
+  const history = useHistory();
   const {sheet: newsSheet, openSheet: openNewsSheet} = useConfirmSheet({Content: AppNewsSheet});
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const toggleIsUserMenuOpen = useCallback(
@@ -37,6 +39,9 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
     await logout();
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+  };
+  const handleLinkToProfile = () => {
+    history.push('/me');
   };
   return (
     <TopBar
@@ -80,7 +85,7 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
           onToggle={toggleIsUserMenuOpen}
           actions={[
             {
-              items: [{content: 'My account', icon: CustomersMajor}]
+              items: [{content: 'My account', icon: CustomersMajor, onAction: handleLinkToProfile}]
             },
             {
               items: [{content: 'Log out', icon: LogOutMinor, onAction: handleLogout}]
