@@ -1,6 +1,5 @@
 import Router from 'koa-router';
 import * as userController from '@functions/controllers/userController';
-import {uploadMiddleware} from '@functions/middleware/uploadMiddleware';
 import {validateMiddleware} from '@functions/middleware/validateMiddleware';
 
 export default function apiRouter() {
@@ -12,6 +11,5 @@ export default function apiRouter() {
   router.put('/user', validateMiddleware, userController.updateUserController);
   router.post('/user', validateMiddleware, userController.createUserController);
 
-  router.put('/upload', uploadMiddleware, userController.uploadUserController);
   return router;
 }
