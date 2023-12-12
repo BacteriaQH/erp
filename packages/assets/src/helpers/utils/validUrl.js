@@ -17,3 +17,16 @@ export default function validUrl(string) {
     (string.startsWith('{{') && string.endsWith('}}'))
   );
 }
+export const ROLE = {
+  ADMIN: 'admin',
+  USER: 'user'
+};
+
+export const ROLE_PATH = {
+  [ROLE.ADMIN]: ['/', '/user', '/samples', '/settings'],
+  [ROLE.USER]: ['/', '/me']
+};
+
+export function isValidUrlWithRole(path, role) {
+  return !!ROLE_PATH[role].some(x => x === path);
+}

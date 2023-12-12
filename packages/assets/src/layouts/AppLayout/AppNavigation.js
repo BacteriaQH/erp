@@ -5,6 +5,8 @@ import {CustomersMajor, HomeMajor, SettingsMajor, ShareMinor} from '@shopify/pol
 import '@assets/styles/layout/navigation.scss';
 import {prependRoute} from '@assets/config/app';
 import {getUrl} from '@assets/helpers/getUrl';
+import {getStorageData} from '@assets/helpers/storage';
+import {isValidUrlWithRole} from '@assets/helpers/utils/validUrl';
 
 /**
  * @return {JSX.Element}
@@ -13,7 +15,7 @@ import {getUrl} from '@assets/helpers/getUrl';
 export default function AppNavigation() {
   const history = useHistory();
   const {pathname} = useLocation();
-
+  const user = getStorageData('user');
   const isSelected = (route, isExact = true) => {
     if (typeof route === 'undefined') return false;
     const url = prependRoute(route);
@@ -22,6 +24,7 @@ export default function AppNavigation() {
 
   const prepareMenu = (menu, item) => {
     if (!item) return menu;
+    if (!isValidUrlWithRole(item.url, user?.user?.role)) return menu;
 
     const {subNavigationItems: subMenus, url, path, includeUrl} = item;
 
