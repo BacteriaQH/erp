@@ -9,6 +9,8 @@ import useFetchApi from '@assets/hooks/api/useFetchApi';
 import {read, utils} from 'xlsx';
 import * as Yup from 'yup';
 import {api} from '@assets/helpers';
+import {setToast} from '@assets/actions/storeActions';
+import {useStore} from '@assets/reducers/storeReducer';
 
 const schema = Yup.object().shape({
   fullName: Yup.string().required(),
@@ -17,9 +19,10 @@ const schema = Yup.object().shape({
     .required(),
   englishName: Yup.string(),
   role: Yup.string().matches(/(user|admin)/),
-  active: Yup.boolean()
+  active: Yup.string().matches(/(true|false)/)
 });
 export default function User() {
+  const {dispatch} = useStore();
   const inputFileRef = useRef(null);
   const [loadingBulk, setLoadingBulk] = useState(false);
   const initialInput = {
@@ -65,13 +68,29 @@ export default function User() {
       const wb = read(binaryStr, {type: 'binary'});
       const ws = wb.Sheets[wb.SheetNames[0]];
       const dataFromCsv = utils.sheet_to_json(ws);
-      const dataToCreate = dataFromCsv.map(item => ({
-        ...item,
-        role: [item.role.toLowerCase()],
-        createdAt: {_seconds: Date.now() / 1000}
-      }));
-      const resp = await api({url: '/users', data: dataToCreate, method: 'POST'});
+      const dataToCreate = dataFromCsv.map(item => {
+        return schema
+          .validate(item)
+          .then(val => {
+            return {
+              ...val,
+              active: val.active === 'true',
+              role: [val.role.toLowerCase()],
+              createdAt: {_seconds: Date.now() / 1000}
+            };
+          })
+          .catch(() => {
+            setToast(dispatch, `Fail to import user: ${item.email}`, true);
+          });
+      });
+      const res = (await Promise.all(dataToCreate)).filter(item => item !== undefined);
+      const resp = await api({url: '/users', data: res, method: 'POST'});
       if (resp.success) {
+        setToast(
+          dispatch,
+          `Import ${resp.data.length} / ${dataToCreate.length} users successful`,
+          true
+        );
         setData(prev => [...prev, ...resp.data]);
       }
       setLoadingBulk(false);
