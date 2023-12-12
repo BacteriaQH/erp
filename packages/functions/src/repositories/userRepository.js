@@ -95,3 +95,21 @@ export const deleteUser = async ids => {
     console.log(e);
   }
 };
+
+export const createBulkUsers = async data => {
+  try {
+    const batch = firebaseAdmin.firestore().batch();
+    const resp = data.map(item => {
+      const docRef = userRef.doc();
+      batch.set(docRef, item);
+      return {
+        id: docRef.id,
+        ...item
+      };
+    });
+    await batch.commit();
+    return resp;
+  } catch (e) {
+    console.log(e);
+  }
+};

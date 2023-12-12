@@ -1,5 +1,6 @@
 import {
   checkUser,
+  createBulkUsers,
   createUser,
   deleteUser,
   getUsers,
@@ -109,17 +110,17 @@ export const getUsersController = async ctx => {
   }
 };
 
-export const uploadUserController = async ctx => {
+export const createBulkUserController = async ctx => {
   try {
-    console.log(ctx.request);
-    console.log(ctx.req.body);
-    ctx.body = {
+    const data = ctx.req.body;
+    const users = await createBulkUsers(data);
+    return (ctx.body = {
+      data: users,
       success: true,
-      message: 'Upload success'
-    };
+      message: 'Users fetched'
+    });
   } catch (e) {
     ctx.status = 404;
-    console.log(e);
     ctx.body = {
       success: false,
       error: e.message

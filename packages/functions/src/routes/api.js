@@ -10,6 +10,7 @@ export default function apiRouter() {
   router.delete('/user', userController.deleteUserController);
   router.put('/user', validateMiddleware, userController.updateUserController);
   router.post('/user', validateMiddleware, userController.createUserController);
+  router.post('/users', userController.createBulkUserController);
 
   return router;
 }
