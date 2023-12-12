@@ -11,7 +11,7 @@ export const checkUserController = async ctx => {
     const {email, avatar} = ctx.req.body;
     const user = await checkUser(email);
     if (user && user.role.length > 0 && user.active) {
-      if (user.avatar === '') {
+      if (user.avatar === '' || !user.avatar) {
         const updatedUser = await updateUserById(user.id, {avatar});
         return (ctx.body = {
           data: updatedUser,
