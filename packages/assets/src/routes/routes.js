@@ -1,7 +1,6 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
 import Home from '@assets/loadables/Home';
-import Samples from '@assets/loadables/Samples/Samples';
 import Settings from '@assets/loadables/Settings/Settings';
 import {routePrefix} from '@assets/config/app';
 import NotFound from '@assets/loadables/NotFound';
@@ -15,10 +14,6 @@ const router = {
     {
       path: '/',
       component: Home
-    },
-    {
-      path: '/samples',
-      component: Samples
     },
     {
       path: '/settings',

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Navigation} from '@shopify/polaris';
 import {useHistory, useLocation} from 'react-router-dom';
-import {CustomersMajor, HomeMajor, SettingsMajor, ShareMinor} from '@shopify/polaris-icons';
+import {CustomersMajor, HomeMajor, SettingsMajor} from '@shopify/polaris-icons';
 import '@assets/styles/layout/navigation.scss';
 import {prependRoute} from '@assets/config/app';
 import {getUrl} from '@assets/helpers/getUrl';
@@ -62,15 +62,6 @@ export default function AppNavigation() {
             selected: location.pathname === getUrl('/'),
             onClick: () => {
               history.push('/');
-            }
-          },
-          {
-            url: '/samples',
-            icon: ShareMinor,
-            label: 'Samples',
-            selected: location.pathname === getUrl('/samples'),
-            onClick: () => {
-              history.push('/samples');
             }
           },
           {
