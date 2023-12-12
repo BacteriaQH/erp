@@ -17,7 +17,6 @@ import '@assets/styles/layout/topbar.scss';
 import useConfirmSheet from '@assets/hooks/popup/useConfirmSheet';
 import AppNewsSheet from '@assets/components/AppNews/AppNewsSheet';
 import {useUser} from '@assets/reducers/userReducer';
-import {useAuth} from '@assets/reducers/authReducer';
 import {logout} from '@assets/actions/authAction';
 
 /**
@@ -34,7 +33,11 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
     () => setIsUserMenuOpen(isUserMenuOpen => !isUserMenuOpen),
     []
   );
-  // const {dispatch} = useAuth();
+  const handleLogout = async () => {
+    await logout();
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  };
   return (
     <TopBar
       secondaryMenu={
@@ -70,9 +73,9 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
       }
       userMenu={
         <TopBar.UserMenu
-          name={user?.user?.fullname}
+          name={user?.user?.fullName}
           avatar={user?.user?.avatar}
-          initials={user?.user?.fullname[0]}
+          initials={user?.user?.fullName[0]}
           open={isUserMenuOpen}
           onToggle={toggleIsUserMenuOpen}
           actions={[
@@ -80,7 +83,7 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
               items: [{content: 'My account', icon: CustomersMajor}]
             },
             {
-              items: [{content: 'Log out', icon: LogOutMinor, onAction: () => logout()}]
+              items: [{content: 'Log out', icon: LogOutMinor, onAction: handleLogout}]
             }
           ]}
         />
