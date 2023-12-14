@@ -23,7 +23,7 @@ export default function Profile() {
     <Page title="My account">
       <Layout>
         <Layout.AnnotatedSection id="detail" title="Detail">
-          <Card padding="400">
+          <Card>
             <ResourceList
               resourceName={{singular: 'User', plural: 'Users'}}
               items={[
@@ -46,7 +46,7 @@ export default function Profile() {
                     key={id}
                     id={id}
                   >
-                    <DisplayText variant="bodyMd" size="small">
+                    <DisplayText size="small">
                       {name}
                       <Badge tone="info">{role}</Badge>
                     </DisplayText>

@@ -1,5 +1,5 @@
 import {Card, Layout, Page} from '@shopify/polaris';
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 
 import useConfirmModal from '@assets/hooks/popup/useConfirmModal';
 import ListUser from './ListUser';
@@ -8,7 +8,6 @@ import useCreateApi from '@assets/hooks/api/useCreateApi';
 import useFetchApi from '@assets/hooks/api/useFetchApi';
 import {read, utils} from 'xlsx';
 import * as Yup from 'yup';
-import {api} from '@assets/helpers';
 import {setToast} from '@assets/actions/storeActions';
 import {useStore} from '@assets/reducers/storeReducer';
 
@@ -24,7 +23,6 @@ const schema = Yup.object().shape({
 export default function User() {
   const {dispatch} = useStore();
   const inputFileRef = useRef(null);
-  const [loadingBulk, setLoadingBulk] = useState(false);
   const initialInput = {
     email: '',
     role: 'user',
@@ -36,14 +34,18 @@ export default function User() {
     url: '/users',
     initLoad: true
   });
-  const {handleCreate, creating} = useCreateApi({
+  const {handleCreate: handleCreateUser, creating: creatingUser} = useCreateApi({
     url: '/user',
+    fullResp: true
+  });
+  const {handleCreate: handleCreateUsers, creating: creatingUsers} = useCreateApi({
+    url: '/users',
     fullResp: true
   });
   const modalContent = () => <UserDataModal inputRef={inputRef} />;
   const {modal, openModal, closeModal} = useConfirmModal({
     confirmAction: async () => {
-      const resp = await handleCreate(inputRef.current);
+      const resp = await handleCreateUser(inputRef.current);
       setData(prev => [...prev, resp.data]);
       inputRef.current = initialInput;
       closeModal();
@@ -52,7 +54,7 @@ export default function User() {
     buttonTitle: 'Create',
     HtmlContent: modalContent,
     defaultCurrentInput: inputRef.current,
-    loading: creating
+    loading: creatingUser
   });
   const handleOnClickBulk = () => {
     inputFileRef.current.click();
@@ -60,7 +62,6 @@ export default function User() {
   const onChangeFile = e => {
     e.stopPropagation();
     e.preventDefault();
-    setLoadingBulk(true);
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = async evt => {
@@ -84,7 +85,7 @@ export default function User() {
           });
       });
       const res = (await Promise.all(dataToCreate)).filter(item => item !== undefined);
-      const resp = await api({url: '/users', data: res, method: 'POST'});
+      const resp = await handleCreateUsers(res);
       if (resp.success) {
         setToast(
           dispatch,
@@ -93,7 +94,6 @@ export default function User() {
         );
         setData(prev => [...prev, ...resp.data]);
       }
-      setLoadingBulk(false);
     };
     reader.readAsBinaryString(file);
   };
@@ -106,7 +106,7 @@ export default function User() {
           content: 'Import user from file',
           onAction: handleOnClickBulk,
           outline: true,
-          loading: loadingBulk
+          loading: creatingUsers
         }
       ]}
     >
